@@ -25,13 +25,21 @@ if (!doNotTrack) {
 }
 </script-->
 <!--script async src='https://www.google-analytics.com/analytics.js'></script-->
-    <title>Login</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Identify user using a personal email address." />
+    <title>{{partial "i18n" .Params.seoTitle}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="{{partial "i18n" .Params.seoDescription}}" />
     <meta name="author" content="CalCool Studios" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ .Params.seoURL }}" />
+    <meta property="og:title" content="{{partial "i18n" .Params.seoTitle}}" />
+    <meta property="og:description" content="{{partial "i18n" .Params.seoDescription}}" />
+{{ $image := replace .Params.banner " " "%20" }}
+{{ $imageResource := imageConfig (print "/static" .Params.banner) }}
+    <meta property="og:image" content="{{ $image }}" />
+    <meta property="og:image:width" content="{{ $imageResource.Width }}" />
+    <meta property="og:image:height" content="{{ $imageResource.Height }}" />
+    
     <script type="application/javascript">
   // retrieve parameters from URL
   const loginConfig = {
@@ -39,7 +47,7 @@ if (!doNotTrack) {
     application: new URLSearchParams(window.location.search).get('app') || 'calcool',
     company: new URLSearchParams(window.location.search).get('co') || 'CalCool Studios',
     background: new URLSearchParams(window.location.search).get('bg') || 'default',
-    logo: new URLSearchParams(window.location.search).get('logo') || '/images/Logo%20v1%20and%20bar.svg'
+    logo: new URLSearchParams(window.location.search).get('logo') || '{{ $image }}'
   };
   // install service worker to rewrite URLs
   if ('serviceWorker' in navigator) {
@@ -57,8 +65,7 @@ if (!doNotTrack) {
     <link rel="stylesheet" href="/css/login-style.css">
   </head>
   <body>
-  <div class="container mt-5">
-    <div class="logo">
+    <div class="logo" style="width: 100%;">
       <script type="application/javascript">
 // Création de l'élément <img>
 const imgElement = document.createElement('img');
@@ -73,6 +80,7 @@ imgElement.style.height = 'auto';
 document.currentScript.parentNode.appendChild(imgElement);
       </script>
     </div>
+  <div class="container mt-5">
     <div class="card">
       <div class="card-header">
         {{partial "i18n" .Title}}
