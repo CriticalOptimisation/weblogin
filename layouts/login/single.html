@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+
+<html lang="fr">
+  <head>
+<!-- Need specific property for common login controller -->        
+<!--script async src="https://www.googletagmanager.com/gtag/js?id=G-RP8E0TN2P6"></script-->
+<!--script>
+var doNotTrack = false;
+if (!doNotTrack) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RP8E0TN2P6', { 'anonymize_ip': false });
+}
+</script-->
+
+        
+<!--script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        ga('create', 'G-RP8E0TN2P6', 'auto');
+        
+        ga('send', 'pageview');
+}
+</script-->
+<!--script async src='https://www.google-analytics.com/analytics.js'></script-->
+    <title>Login</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Identify user using a personal email address." />
+    <meta name="author" content="CalCool Studios" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <script type="application/javascript">
+  // retrieve parameters from URL
+  const loginConfig = {
+    database: new URLSearchParams(window.location.search).get('database') || 'nologin',
+    application: new URLSearchParams(window.location.search).get('app') || 'calcool',
+    company: new URLSearchParams(window.location.search).get('co') || 'CalCool Studios',
+    background: new URLSearchParams(window.location.search).get('bg') || 'default',
+    logo: new URLSearchParams(window.location.search).get('logo') || '/images/Logo%20v1%20and%20bar.svg'
+  };
+  // install service worker to rewrite URLs
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then((registration) => {
+      console.log('Service Worker enregistré avec succès:', registration);
+    })
+    .catch((error) => {
+      console.log('Échec de l\'enregistrement du Service Worker:', error);
+    });
+  }
+    </script>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/login-style.css">
+  </head>
+  <body>
+  <div class="container mt-5">
+    <div class="logo">
+      <script type="application/javascript">
+// Création de l'élément <img>
+const imgElement = document.createElement('img');
+        
+// Attributs
+imgElement.src = loginConfig.logo; // URL du logo
+imgElement.alt = loginConfig.application; // Texte alternatif
+imgElement.style.width = '100%';
+imgElement.style.height = 'auto';
+        
+// Ajout de l'élément ici
+document.currentScript.parentNode.appendChild(imgElement);
+      </script>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        {{partial "i18n" .Title}}
+      </div>
+      <div class="card-body">
+        <div class="email" id="emailDiv">
+          <form id="emailForm" class="form-inline">
+            <input type="email" id="emailInput" class="form-control mr-2" placeholder="adresse email">
+            <button type="button" id="nextButton" class="btn btn-primary" onclick="toggleVisibility('emailDiv', 'passwordDiv')">
+              <svg width="24" height="24" viewBox="0 0 24 24" style="vertical-align: bottom;">
+                <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="{{ .Params.buttonTextColor }}"></path>
+              </svg>
+            Suite
+            </button>
+          </form>
+        </div>
+        <div class="password" id="passwordDiv" style="display: none;">
+          <form id="passwordForm" class="form-inline">
+            <input type="password" id="passwordInput" class="form-control mr-2" placeholder="mot de passe">
+            <button type="button" id="loginButton" class="btn btn-primary" onclick="authenticateUser('passwordDiv', '2FAcodeDiv')">
+              <svg width="24" height="24" viewBox="0 0 24 24" style="vertical-align: middle;">
+                <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="{{ .Params.buttonTextColor }}"></path>
+              </svg>
+              Suite
+            </button>
+          </form>
+        </div>
+        <div class="2FAcodeDiv" style="display: none;">
+        </div>
+      </div>
+    </div>
+  </div>  
+
+<script>
+  // Fonction pour basculer la visibilité des divs
+  function toggleVisibility(emailDiv, passwordDiv) {
+    // Hide login box, show password box
+    document.getElementById(emailDiv).style.display = 'none';
+    document.getElementById(passwordDiv).style.display = 'block';
+  }
+
+  // Fonction pour authentifier l'utilisateur
+  function authenticateUser(passwordDiv, twoFactorDiv) {
+    // Authentification code
+    // Hide password box
+    document.getElementById(passwordDiv).style.display = 'none'
+    // TODO show 2FA code input
+    // TODO authentify user
+    // Create token with customer Id, user role and expiration in 24 hours.
+    // In production, the token would be created on the server and would follow a standard such as 0auth.
+    const tokenData = {
+      client: "Nom_de_l_entreprise",
+      role: "Rôle_utilisateur",
+      expiration: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Dans 24 heures
+    };
+  
+    // Convert token to string
+    const jsonTokenData = JSON.stringify(tokenData);
+  
+    // Encode JSON string in base64
+    const base64TokenData = btoa(jsonTokenData);
+  
+    // Encode base64 string safely to use in URL path component
+    const urlEncodedTokenData = encodeURIComponent(base64TokenData);
+  
+    // Convert expiration date to UTC
+    const expirationDate = new Date(tokenData['expiration']).toUTCString();
+
+    // Store on client browser in a cookie
+    document.cookie = `auth_token=${urlEncodedTokenData}; path=/; expires=${expirationDate}`;
+  }
+</script>
+
+  </body>
+</html> 
+
+

@@ -1,0 +1,5 @@
+## Translations files are used only when the module is integrated in a a multilingual project.
+## Login dialog
+[connexion]
+	other = 'Connexion'
+	

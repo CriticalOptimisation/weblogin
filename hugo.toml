@@ -1,0 +1,30 @@
+## -----------------------------------------------
+## Hugo Built-in Features
+## -----------------------------------------------
+
+enableGitInfo = "true"
+disableKinds = ["taxonomy", "section"]
+## -----------------------------------------------
+## Module Configuration
+## -----------------------------------------------
+[module]
+[module.hugoVersion]
+extended = false
+min = '0.119'
+max = '0.119'
+
+## Hugo treats modules like mounts in a virtual filesystem.
+## Therefore only complete directories can be added by a module.
+[[module.mounts]]
+source = 'content'
+target = 'content'
+[[module.mounts]]
+source = 'static'
+target = 'static'
+[[module.mounts]]
+source = 'layouts'
+target = 'layouts'
+[[module.mounts]]
+source = 'i18n'
+target = 'i18n'
+
